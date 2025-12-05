@@ -1,12 +1,23 @@
-FROM python:3.10
+# Docker Setup для тестов effective-mobile.ru
 
-WORKDIR /app
+1. Установить Docker
+   - Windows/macOS: https://www.docker.com/get-started
+   - Linux: sudo apt install docker.io
 
-COPY dependencies.txt .
-RUN pip install --no-cache-dir -r dependencies.txt
+2. Собрать Docker образ
+   Перейти в папку проекта, где находится Dockerfile, и выполнить:
+   docker build -t effective-tests .
 
-RUN playwright install --with-deps
+3. Запустить тесты в контейнере
+   docker run --rm effective-tests
 
-COPY . .
+4. Сбор отчетов Allure (опционально)
+   - После запуска контейнера, если хотите посмотреть отчет Allure, можно скопировать папку allure-results на хост:
+     docker cp <container_id>:/app/allure-results ./allure-results
+   - И запустить:
+     allure serve ./allure-results
 
-CMD ["pytest", "-s", "--alluredir=allure-results"]
+Примечание:
+- Флаг --rm удаляет контейнер после завершения тестов.
+- Все зависимости уже внутри контейнера, поэтому не нужно устанавливать Python или Playwright на локальной машине.
+
