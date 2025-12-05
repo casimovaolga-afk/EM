@@ -1,0 +1,12 @@
+FROM python:3.10
+
+WORKDIR /app
+
+COPY dependencies.txt .
+RUN pip install --no-cache-dir -r dependencies.txt
+
+RUN playwright install --with-deps
+
+COPY . .
+
+CMD ["pytest", "-s", "--alluredir=allure-results"]
